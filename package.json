@@ -8,6 +8,7 @@
     "build-storybook": "build-storybook -o storybook-static"
   },
   "devDependencies": {
+    "@storybook/cli": "10.1.11",
     "@storybook/react": "10.1.11",
     "@storybook/addon-links": "10.1.11",
     "@storybook/builder-webpack5": "10.1.11",
