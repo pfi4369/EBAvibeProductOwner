@@ -1,0 +1,10 @@
+﻿{
+  "name": "ebavibe-onboarding-stub",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "echo \"no lint\"",
+    "test": "echo \"no tests\"",
+    "build-storybook": "mkdir -p storybook-static && printf \"<!doctype html><html><body><h1>No Storybook built</h1></body></html>\" > storybook-static/index.html"
+  }
+}
