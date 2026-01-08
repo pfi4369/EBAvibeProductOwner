@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@storybook/react": "10.1.11",
-    "@storybook/addon-links": "10.1.11"
+    "@storybook/addon-links": "10.1.11",
+    "@storybook/builder-webpack5": "10.1.11"
   }
 }
