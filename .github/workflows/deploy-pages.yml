@@ -21,7 +21,8 @@ jobs:
           echo "<!doctype html><html><body><h1>Stub Storybook</h1><p>Deployed to GitHub Pages</p></body></html>" > storybook-static/index.html
 
       - name: Upload artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v1
+        # use v3 here to avoid pulling deprecated upload-artifact v3
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./storybook-static
 
