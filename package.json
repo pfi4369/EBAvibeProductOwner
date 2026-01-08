@@ -9,7 +9,6 @@
   },
   "devDependencies": {
     "@storybook/react": "10.1.11",
-    "@storybook/addon-links": "10.1.11",
-    "@storybook/addon-essentials": "10.1.11"
+    "@storybook/addon-links": "10.1.11"
   }
 }
