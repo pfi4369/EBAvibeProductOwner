@@ -3,5 +3,11 @@ module.exports = {
   addons: [
     "@storybook/addon-links"
   ],
-  framework: "@storybook/react-webpack5"
+  framework: {
+    name: "@storybook/react",
+    options: {}
+  },
+  core: {
+    builder: "@storybook/builder-webpack5"
+  }
 };
