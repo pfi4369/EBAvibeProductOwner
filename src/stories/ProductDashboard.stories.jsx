@@ -69,14 +69,54 @@ export const FewProducts = () =>
     title: 'Product Dashboard - Getting Started'
   });
 
-export const ManyProducts = () =>
-  React.createElement(ProductDashboard, {
-    products: [
-      ...sampleProducts,
-      ...sampleProducts.map((p, i) => ({
-        ...p,
-        name: `${p.name} (Copy ${i + 1})`
-      }))
-    ],
+export const ManyProducts = () => {
+  const additionalProducts = [
+    {
+      name: 'User Authentication',
+      description: 'Implement OAuth 2.0 authentication',
+      status: 'In Progress',
+      priority: 'High',
+      owner: 'John Smith'
+    },
+    {
+      name: 'Email Notifications',
+      description: 'Set up email notification system',
+      status: 'Planned',
+      priority: 'Low',
+      owner: 'Jane Doe'
+    },
+    {
+      name: 'Data Export',
+      description: 'Add CSV/Excel export functionality',
+      status: 'Completed',
+      priority: 'Medium',
+      owner: 'Mike Johnson'
+    },
+    {
+      name: 'Search Feature',
+      description: 'Implement full-text search',
+      status: 'In Progress',
+      priority: 'Medium',
+      owner: 'Sarah Chen'
+    },
+    {
+      name: 'Mobile Responsiveness',
+      description: 'Ensure mobile-friendly design',
+      status: 'Blocked',
+      priority: 'High',
+      owner: 'David Lee'
+    },
+    {
+      name: 'API Documentation',
+      description: 'Create comprehensive API docs',
+      status: 'Planned',
+      priority: 'Low',
+      owner: 'Alex Taylor'
+    }
+  ];
+  
+  return React.createElement(ProductDashboard, {
+    products: [...sampleProducts, ...additionalProducts],
     title: 'Product Dashboard - Large Portfolio'
   });
+};
