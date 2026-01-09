@@ -1,5 +1,4 @@
-import React from 'react';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../components/ProductCard.vue';
 
 export default {
   title: 'Components/ProductCard',
@@ -14,13 +13,14 @@ const sampleProduct = {
   owner: 'Sarah Chen'
 };
 
-export const InProgress = () =>
-  React.createElement(ProductCard, {
+export const InProgress = {
+  args: {
     product: sampleProduct
-  });
+  }
+};
 
-export const Completed = () =>
-  React.createElement(ProductCard, {
+export const Completed = {
+  args: {
     product: {
       name: 'API Integration',
       description: 'Integrate third-party payment API',
@@ -28,10 +28,11 @@ export const Completed = () =>
       priority: 'High',
       owner: 'Mike Johnson'
     }
-  });
+  }
+};
 
-export const Planned = () =>
-  React.createElement(ProductCard, {
+export const Planned = {
+  args: {
     product: {
       name: 'Dashboard Analytics',
       description: 'Add analytics dashboard for user insights',
@@ -39,10 +40,11 @@ export const Planned = () =>
       priority: 'Medium',
       owner: 'Emily Rodriguez'
     }
-  });
+  }
+};
 
-export const Blocked = () =>
-  React.createElement(ProductCard, {
+export const Blocked = {
+  args: {
     product: {
       name: 'Database Migration',
       description: 'Migrate from legacy database to new cloud solution',
@@ -50,10 +52,11 @@ export const Blocked = () =>
       priority: 'High',
       owner: 'David Lee'
     }
-  });
+  }
+};
 
-export const LowPriority = () =>
-  React.createElement(ProductCard, {
+export const LowPriority = {
+  args: {
     product: {
       name: 'Documentation Update',
       description: 'Update technical documentation for latest release',
@@ -61,4 +64,5 @@ export const LowPriority = () =>
       priority: 'Low',
       owner: 'Alex Taylor'
     }
-  });
+  }
+};
