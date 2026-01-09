@@ -1,6 +1,7 @@
 import React from 'react';
 
 const ProductCard = ({ product }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
   const { name, description, status, priority, owner } = product;
 
   const statusColors = {
@@ -22,7 +23,8 @@ const ProductCard = ({ product }) => {
     padding: '16px',
     margin: '8px',
     backgroundColor: '#fff',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    boxShadow: isHovered ? '0 4px 8px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.1)',
+    transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
     transition: 'transform 0.2s, box-shadow 0.2s',
     cursor: 'pointer',
     maxWidth: '300px'
@@ -62,14 +64,8 @@ const ProductCard = ({ product }) => {
     'div',
     { 
       style: cardStyle,
-      onMouseEnter: (e) => {
-        e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-      },
-      onMouseLeave: (e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-      }
+      onMouseEnter: () => setIsHovered(true),
+      onMouseLeave: () => setIsHovered(false)
     },
     React.createElement('div', { style: titleStyle }, name),
     React.createElement('div', { style: descriptionStyle }, description),

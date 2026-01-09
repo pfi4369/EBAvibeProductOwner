@@ -91,8 +91,8 @@ const ProductDashboard = ({ products, title }) => {
     React.createElement(
       'div',
       { style: gridStyle },
-      products.map((product, index) =>
-        React.createElement(ProductCard, { key: index, product })
+      products.map((product) =>
+        React.createElement(ProductCard, { key: product.name, product })
       )
     )
   );
