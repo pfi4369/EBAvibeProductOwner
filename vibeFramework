@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Coding Framework | Config-Driven Prompt Orchestration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f1419;
+      --bg-card: #1a1f26;
+      --bg-card-hover: #242b35;
+      --text-primary: #e7e9ea;
+      --text-secondary: #8b98a5;
+      --text-muted: #6e7a86;
+      --accent-blue: #1d9bf0;
+      --accent-purple: #7856ff;
+      --accent-green: #00ba7c;
+      --accent-yellow: #ffd000;
+      --accent-red: #f4212e;
+      --accent-orange: #ff7a00;
+      --border-subtle: #2f3336;
+      --gradient-1: linear-gradient(135deg, #1d9bf0 0%, #7856ff 100%);
+      --gradient-2: linear-gradient(135deg, #00ba7c 0%, #1d9bf0 100%);
+      --gradient-3: linear-gradient(135deg, #ff7a00 0%, #ffd000 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-subtle);
+      background: linear-gradient(180deg, rgba(29, 155, 240, 0.08) 0%, transparent 100%);
+    }
+
+    .header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.75rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header .tagline {
+      color: var(--text-secondary);
+      font-size: 1.125rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .header .analogy {
+      margin-top: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: var(--bg-card);
+      border-radius: 12px;
+      display: inline-block;
+      border-left: 4px solid var(--accent-yellow);
+    }
+
+    .header .analogy p {
+      font-style: italic;
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .nav-btn.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: white;
+    }
+
+    /* Main Content */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Section */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Overview Section */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .overview-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+    }
+
+    .overview-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+
+    .overview-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .overview-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Three Layers */
+    .layers-section {
+      margin-top: 3rem;
+    }
+
+    .layers-section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .layers-diagram {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .layer-box {
+      width: 200px;
+      padding: 1.5rem;
+      border-radius: 16px;
+      text-align: center;
+      border: 2px solid;
+    }
+
+    .layer-box.ux {
+      background: rgba(120, 86, 255, 0.1);
+      border-color: var(--accent-purple);
+    }
+
+    .layer-box.api {
+      background: rgba(0, 186, 124, 0.1);
+      border-color: var(--accent-green);
+    }
+
+    .layer-box.schema {
+      background: rgba(255, 122, 0, 0.1);
+      border-color: var(--accent-orange);
+    }
+
+    .layer-box h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .layer-box p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .layer-box .icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Config Cards */
+    .config-selector {
+      margin-top: 3rem;
+    }
+
+    .config-selector h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .config-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .config-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .config-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    .config-card.crud::before { background: var(--gradient-1); }
+    .config-card.dashboard::before { background: var(--gradient-2); }
+    .config-card.api::before { background: var(--gradient-3); }
+
+    .config-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    .config-card .icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .config-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .config-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .config-card .layers-indicator {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .layer-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .layer-badge.primary {
+      background: rgba(29, 155, 240, 0.2);
+      color: var(--accent-blue);
+    }
+
+    .layer-badge.secondary {
+      background: rgba(139, 152, 165, 0.2);
+      color: var(--text-secondary);
+    }
+
+    /* Config Detail View */
+    .config-detail {
+      display: none;
+    }
+
+    .config-detail.active {
+      display: block;
+    }
+
+    .config-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .back-btn {
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .config-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+    }
+
+    /* Phase Flow */
+    .phase-flow {
+      margin-top: 2rem;
+    }
+
+    .phase-item {
+      background: var(--bg-card);
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+
+    .phase-header {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .phase-header:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .phase-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .phase-number.blue { background: var(--accent-blue); }
+    .phase-number.purple { background: var(--accent-purple); }
+    .phase-number.yellow { background: var(--accent-yellow); color: #000; }
+    .phase-number.green { background: var(--accent-green); }
+    .phase-number.red { background: var(--accent-red); }
+    .phase-number.orange { background: var(--accent-orange); }
+
+    .phase-info {
+      flex: 1;
+    }
+
+    .phase-info h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .phase-info p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .phase-toggle {
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      transition: transform 0.2s ease;
+    }
+
+    .phase-item.expanded .phase-toggle {
+      transform: rotate(180deg);
+    }
+
+    .phase-content {
+      display: none;
+      padding: 0 1.5rem 1.5rem 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .phase-item.expanded .phase-content {
+      display: block;
+    }
+
+    /* Questions */
+    .questions-list {
+      margin-top: 1rem;
+    }
+
+    .question-item {
+      padding: 1rem;
+      background: rgba(255,255,255,0.02);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      border-left: 3px solid var(--accent-blue);
+    }
+
+    .question-item .q-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .question-item .q-text {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-item .q-hint {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .question-item .q-type {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      background: var(--bg-card-hover);
+      border-radius: 4px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 0.5rem;
+    }
+
+    /* Gates */
+    .gates-section {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border-subtle);
+    }
+
+    .gates-section h5 {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .gate-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .gate-check {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--accent-green);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-green);
+      font-size: 0.7rem;
+    }
+
+    /* JSON Viewer */
+    .json-section {
+      margin-top: 3rem;
+    }
+
+    .json-section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .json-toggle {
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .json-toggle:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .json-viewer {
+      display: none;
+      margin-top: 1rem;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+    }
+
+    .json-viewer.active {
+      display: block;
+    }
+
+    .json-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .json-tab {
+      padding: 0.75rem 1.25rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .json-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .json-tab.active {
+      color: var(--accent-blue);
+      border-bottom-color: var(--accent-blue);
+    }
+
+    .json-content {
+      display: none;
+      padding: 1rem;
+      max-height: 500px;
+      overflow: auto;
+    }
+
+    .json-content.active {
+      display: block;
+    }
+
+    .json-content pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 4rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .layers-diagram {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .layer-box {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>Vibe Coding Framework</h1>
+    <p class="tagline">Config-driven prompt orchestration for Product Owners. Pick a pattern, answer questions, get a structured AI-ready specification.</p>
+    <div class="analogy">
+      <p>"Prompting AI without structure is like ordering 'the usual' at a restaurant you've never been to."</p>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <button class="nav-btn active" data-section="overview">Overview</button>
+    <button class="nav-btn" data-section="configs">Config Patterns</button>
+    <button class="nav-btn" data-section="json">Developer JSON</button>
+  </nav>
+
+  <main class="main">
+
+    <!-- OVERVIEW SECTION -->
+    <section id="overview" class="section active">
+      <div class="overview-grid">
+        <div class="overview-card">
+          <h3>🎯 The Problem</h3>
+          <p>Product Owners have AI tools but no structured way to use them. Unstructured prompts produce incomplete, inconsistent outputs.</p>
+        </div>
+        <div class="overview-card">
+          <h3>💡 The Solution</h3>
+          <p>A config-driven framework that walks non-programmers through the right questions, in the right order, for their specific app type.</p>
+        </div>
+        <div class="overview-card">
+          <h3>📦 The Product</h3>
+          <p>The config file IS the product. Each config is a curated thought pattern — expert knowledge packaged for anyone to use.</p>
+        </div>
+      </div>
+
+      <div class="layers-section">
+        <h2>The Three Layers of Any App</h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">Every application is some combination of these three pieces.</p>
+        <div class="layers-diagram">
+          <div class="layer-box ux">
+            <div class="icon">🎨</div>
+            <h4>UX / Wireframe</h4>
+            <p>What the user sees and does</p>
+          </div>
+          <div class="layer-box api">
+            <div class="icon">⚙️</div>
+            <h4>API / Biz Logic</h4>
+            <p>What happens when they do it</p>
+          </div>
+          <div class="layer-box schema">
+            <div class="icon">🗄️</div>
+            <h4>DB Schema</h4>
+            <p>Where it lives and how it relates</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="config-selector">
+        <h2>Choose Your Pattern</h2>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem;">Each pattern asks different questions based on what you're building.</p>
+        <div class="config-cards">
+          <div class="config-card crud" data-config="crud">
+            <div class="icon">📝</div>
+            <h3>CRUD Form Builder</h3>
+            <p>Data entry forms with create, read, update, delete operations. Validation, workflows, submissions.</p>
+            <div class="layers-indicator">
+              <span class="layer-badge primary">UX Primary</span>
+              <span class="layer-badge secondary">API Secondary</span>
+            </div>
+          </div>
+          <div class="config-card dashboard" data-config="dashboard">
+            <div class="icon">📊</div>
+            <h3>Analytics Dashboard</h3>
+            <p>Metrics, charts, filters, drill-downs. KPI tracking and data visualization.</p>
+            <div class="layers-indicator">
+              <span class="layer-badge primary">UX Primary</span>
+              <span class="layer-badge primary">API Primary</span>
+            </div>
+          </div>
+          <div class="config-card api" data-config="api">
+            <div class="icon">🔌</div>
+            <h3>API Integration</h3>
+            <p>Connecting to external or internal APIs. Authentication, error handling, data mapping.</p>
+            <div class="layers-indicator">
+              <span class="layer-badge primary">API Primary</span>
+              <span class="layer-badge primary">Schema Primary</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIGS SECTION -->
+    <section id="configs" class="section">
+      
+      <!-- Config List -->
+      <div id="config-list">
+        <h2 style="font-family: 'DM Serif Display', serif; font-size: 1.75rem; margin-bottom: 1.5rem;">Select a Configuration Pattern</h2>
+        <div class="config-cards">
+          <div class="config-card crud" data-config="crud">
+            <div class="icon">📝</div>
+            <h3>CRUD Form Builder</h3>
+            <p>Data entry forms with create, read, update, delete operations.</p>
+            <div class="layers-indicator">
+              <span class="layer-badge primary">UX Primary</span>
+              <span class="layer-badge secondary">API/Schema Secondary</span>
+            </div>
+          </div>
+          <div class="config-card dashboard" data-config="dashboard">
+            <div class="icon">📊</div>
+            <h3>Analytics Dashboard</h3>
+            <p>Metrics, charts, filters, drill-downs.</p>
+            <div class="layers-indicator">
+              <span class="layer-badge primary">UX Primary</span>
+              <span class="layer-badge primary">API Primary</span>
+            </div>
+          </div>
+          <div class="config-card api" data-config="api">
+            <div class="icon">🔌</div>
+            <h3>API Integration</h3>
+            <p>Connecting to external or internal APIs.</p>
+            <div class="layers-indicator">
+              <span class="layer-badge primary">API Primary</span>
+              <span class="layer-badge primary">Schema Primary</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRUD Detail -->
+      <div id="config-crud" class="config-detail">
+        <div class="config-header">
+          <button class="back-btn" onclick="showConfigList()">← Back</button>
+          <h2 class="config-title">📝 CRUD Form Builder</h2>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">For data entry forms with validation, workflows, and submissions. <strong>UX-heavy</strong> — most questions focus on fields, layout, and user interaction.</p>
+        
+        <div class="phase-flow">
+          <div class="phase-item expanded">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number blue">1</div>
+              <div class="phase-info">
+                <h4>Context</h4>
+                <p>What form are we building and why?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What is this form for? Describe in plain language.</div>
+                  <div class="q-hint">e.g., "A form for nurses to submit supply requests for their department"</div>
+                  <span class="q-type">textarea • required • maps to: all layers</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Do you have a screenshot or mockup of an existing/similar form?</div>
+                  <span class="q-type">image • optional • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What technology stack?</div>
+                  <div class="q-hint">Options: Vue.js/TypeScript, React/TypeScript, Angular, Other</div>
+                  <span class="q-type">select • required • maps to: all layers</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates (must pass before proceeding)</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Purpose clearly defined</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Tech stack confirmed</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number purple">2</div>
+              <div class="phase-info">
+                <h4>Form Fields</h4>
+                <p>What data does the form collect?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">List all fields the form needs. One per line.</div>
+                  <div class="q-hint">e.g., Facility (dropdown), Department (dropdown), Item Description (text), Quantity (number)</div>
+                  <span class="q-type">textarea • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Which fields are required?</div>
+                  <span class="q-type">textarea • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Any special validation rules?</div>
+                  <div class="q-hint">e.g., "Quantity must be between 1-1000", "Email must be @hca.com domain"</div>
+                  <span class="q-type">textarea • optional • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> All fields identified</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Validation rules specified</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number yellow">3</div>
+              <div class="phase-info">
+                <h4>Workflow</h4>
+                <p>What happens when the form is submitted?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What happens on submit?</div>
+                  <div class="q-hint">e.g., "Save to database, send email to approver, show confirmation"</div>
+                  <span class="q-type">textarea • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Does this form require approval workflow?</div>
+                  <span class="q-type">yes/no • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What notifications are needed?</div>
+                  <div class="q-hint">Options: Email to submitter, Email to approver, In-app notification, None</div>
+                  <span class="q-type">multiselect • required • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Submit workflow defined</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number green">4</div>
+              <div class="phase-info">
+                <h4>Data Model</h4>
+                <p>How is the data structured and stored?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What existing data does this form relate to?</div>
+                  <div class="q-hint">e.g., "Links to Facility table, references User table for submitter"</div>
+                  <span class="q-type">textarea • optional • maps to: Schema</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Where do dropdown values come from?</div>
+                  <div class="q-hint">e.g., "Facilities from Facility API, Departments filtered by selected Facility"</div>
+                  <span class="q-type">textarea • optional • maps to: Schema</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Data relationships identified (optional)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number red">5</div>
+              <div class="phase-info">
+                <h4>Quality & Testing</h4>
+                <p>How do we ensure it works correctly?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">List key test scenarios</div>
+                  <div class="q-hint">e.g., "Submit with all fields valid", "Submit with missing required field", "Submit as unauthorized user"</div>
+                  <span class="q-type">textarea • required • maps to: all layers</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">How should errors be displayed to users?</div>
+                  <span class="q-type">textarea • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Accessibility requirements</div>
+                  <div class="q-hint">Options: Keyboard navigation, Screen reader support, Color contrast compliance, Error announcements</div>
+                  <span class="q-type">checklist • required • maps to: UX</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Test scenarios defined</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Accessibility requirements confirmed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Detail -->
+      <div id="config-dashboard" class="config-detail">
+        <div class="config-header">
+          <button class="back-btn" onclick="showConfigList()">← Back</button>
+          <h2 class="config-title">📊 Analytics Dashboard</h2>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">For metrics dashboards with charts, filters, and drill-downs. <strong>UX + API balanced</strong> — equal focus on visualization and data calculations.</p>
+        
+        <div class="phase-flow">
+          <div class="phase-item expanded">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number blue">1</div>
+              <div class="phase-info">
+                <h4>Context</h4>
+                <p>What story does this dashboard tell?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What decisions will this dashboard help users make?</div>
+                  <div class="q-hint">e.g., "Help supply chain managers identify low-stock items before they run out"</div>
+                  <span class="q-type">textarea • required • maps to: all layers</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Who is the primary audience?</div>
+                  <div class="q-hint">e.g., "Regional supply chain directors"</div>
+                  <span class="q-type">text • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Do you have a mockup or example of a similar dashboard?</div>
+                  <span class="q-type">image • optional • maps to: UX</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Dashboard purpose defined</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Audience identified</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number purple">2</div>
+              <div class="phase-info">
+                <h4>Metrics</h4>
+                <p>What numbers matter?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">List the key metrics (KPIs) to display. One per line.</div>
+                  <div class="q-hint">e.g., Total Orders (count), Fill Rate (%), Days of Supply (number), Backorder Value ($)</div>
+                  <span class="q-type">textarea • required • maps to: all layers</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">How is each metric calculated?</div>
+                  <div class="q-hint">e.g., "Fill Rate = Items Shipped / Items Ordered * 100"</div>
+                  <span class="q-type">textarea • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">How often should data refresh?</div>
+                  <div class="q-hint">Options: Real-time, Every 5 minutes, Every hour, Daily, On-demand only</div>
+                  <span class="q-type">select • required • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> KPIs identified</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Calculations documented</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number yellow">3</div>
+              <div class="phase-info">
+                <h4>Visualizations</h4>
+                <p>How should the data be displayed?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What visualizations do you need? Describe each.</div>
+                  <div class="q-hint">e.g., Line chart: Fill rate trend over 12 months, Bar chart: Top 10 backordered items</div>
+                  <span class="q-type">textarea • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Dashboard layout preference?</div>
+                  <div class="q-hint">Options: KPI cards on top/charts below, Sidebar filters/main area charts, Tab-based, Single scrolling page</div>
+                  <span class="q-type">select • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What interactions should be supported?</div>
+                  <div class="q-hint">Options: Click to drill down, Hover for details, Export to Excel, Print/PDF, Share link</div>
+                  <span class="q-type">multiselect • required • maps to: UX</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Visualizations specified</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number green">4</div>
+              <div class="phase-info">
+                <h4>Filters & Drill-downs</h4>
+                <p>How do users slice the data?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What filters should be available?</div>
+                  <div class="q-hint">e.g., Date range (default: last 30 days), Facility (multi-select), Department</div>
+                  <span class="q-type">textarea • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What should the default view show?</div>
+                  <div class="q-hint">e.g., "Last 30 days, all facilities user has access to"</div>
+                  <span class="q-type">textarea • required • maps to: UX</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What drill-down paths are needed?</div>
+                  <div class="q-hint">e.g., "Click region → see facilities → click facility → see departments"</div>
+                  <span class="q-type">textarea • optional • maps to: UX</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Filters specified</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number red">5</div>
+              <div class="phase-info">
+                <h4>Data Sources</h4>
+                <p>Where does the data come from?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What are the data sources?</div>
+                  <div class="q-hint">e.g., "Orders from OrderDB, Inventory from InventoryAPI, Facilities from MDM"</div>
+                  <span class="q-type">textarea • required • maps to: Schema</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Expected data volume?</div>
+                  <div class="q-hint">Options: Small (<10K rows), Medium (10K-1M), Large (1M-100M), Very large (>100M)</div>
+                  <span class="q-type">select • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Who can see what data?</div>
+                  <div class="q-hint">e.g., "Users see only their assigned facilities, Directors see their region"</div>
+                  <span class="q-type">textarea • required • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Data sources identified</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Access control defined</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Integration Detail -->
+      <div id="config-api" class="config-detail">
+        <div class="config-header">
+          <button class="back-btn" onclick="showConfigList()">← Back</button>
+          <h2 class="config-title">🔌 API Integration</h2>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">For connecting to external or internal APIs. <strong>API + Schema heavy</strong> — minimal UX, focus on endpoints, authentication, and error handling.</p>
+        
+        <div class="phase-flow">
+          <div class="phase-item expanded">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number blue">1</div>
+              <div class="phase-info">
+                <h4>Context</h4>
+                <p>What are we integrating and why?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What is the purpose of this integration?</div>
+                  <div class="q-hint">e.g., "Pull inventory levels from vendor API to update our system nightly"</div>
+                  <span class="q-type">textarea • required • maps to: all layers</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Data flow direction?</div>
+                  <div class="q-hint">Options: Inbound (we consume), Outbound (we provide), Bidirectional</div>
+                  <span class="q-type">select • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What triggers the integration?</div>
+                  <div class="q-hint">Options: User action, Scheduled (cron), Event/webhook, On-demand API call</div>
+                  <span class="q-type">select • required • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Integration purpose defined</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number purple">2</div>
+              <div class="phase-info">
+                <h4>Endpoints</h4>
+                <p>What endpoints are involved?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">List external API endpoints to consume (if any)</div>
+                  <div class="q-hint">e.g., GET /api/v2/inventory - Get current stock levels</div>
+                  <span class="q-type">textarea • optional • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">List internal endpoints to create (if any)</div>
+                  <div class="q-hint">e.g., POST /webhook/inventory-update - Receive updates</div>
+                  <span class="q-type">textarea • optional • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Link to API documentation (if available)</div>
+                  <span class="q-type">text • optional • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Endpoints identified</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number yellow">3</div>
+              <div class="phase-info">
+                <h4>Authentication</h4>
+                <p>How do we authenticate?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Authentication method?</div>
+                  <div class="q-hint">Options: API Key, OAuth 2.0, Basic Auth, JWT, Certificate/mTLS, None</div>
+                  <span class="q-type">select • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Where will credentials be stored?</div>
+                  <div class="q-hint">Options: Azure Key Vault, AWS Secrets Manager, Environment variables, Config file (not recommended)</div>
+                  <span class="q-type">select • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Does authentication require token refresh?</div>
+                  <span class="q-type">yes/no • required • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Authentication method confirmed</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Credential storage approved</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number green">4</div>
+              <div class="phase-info">
+                <h4>Data Mapping</h4>
+                <p>How does external data map to our system?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Map external fields to internal fields</div>
+                  <div class="q-hint">e.g., vendor_sku → product_id, qty_on_hand → inventory_level</div>
+                  <span class="q-type">textarea • required • maps to: Schema</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Any data transformations needed?</div>
+                  <div class="q-hint">e.g., "Convert dates from MM/DD/YYYY to ISO 8601"</div>
+                  <span class="q-type">textarea • optional • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">What validation should be performed on incoming data?</div>
+                  <div class="q-hint">e.g., "Reject if SKU not in our product master"</div>
+                  <span class="q-type">textarea • required • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Field mapping documented</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-header" onclick="togglePhase(this)">
+              <div class="phase-number red">5</div>
+              <div class="phase-info">
+                <h4>Error Handling</h4>
+                <p>What happens when things go wrong?</p>
+              </div>
+              <div class="phase-toggle">▼</div>
+            </div>
+            <div class="phase-content">
+              <div class="questions-list">
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Retry strategy for failed calls?</div>
+                  <div class="q-hint">Options: No retry, Retry 3x with exponential backoff, Retry indefinitely, Dead letter queue</div>
+                  <span class="q-type">select • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Request timeout?</div>
+                  <div class="q-hint">e.g., "30 seconds"</div>
+                  <span class="q-type">text • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">How should failures be reported?</div>
+                  <div class="q-hint">Options: Email alert, Slack/Teams notification, PagerDuty, Log only, Dashboard metric</div>
+                  <span class="q-type">multiselect • required • maps to: API</span>
+                </div>
+                <div class="question-item">
+                  <div class="q-label">Question</div>
+                  <div class="q-text">Implement circuit breaker pattern?</div>
+                  <div class="q-hint">Recommended for high-volume integrations</div>
+                  <span class="q-type">yes/no • required • maps to: API</span>
+                </div>
+              </div>
+              <div class="gates-section">
+                <h5>🚦 Quality Gates</h5>
+                <div class="gate-item"><div class="gate-check">✓</div> Error handling specified</div>
+                <div class="gate-item"><div class="gate-check">✓</div> Failure notifications configured</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- JSON SECTION -->
+    <section id="json" class="section">
+      <h2 style="font-family: 'DM Serif Display', serif; font-size: 1.75rem; margin-bottom: 0.5rem;">Developer Reference</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">The JSON configuration files that power this framework. For developers building the config-driven UI.</p>
+      
+      <button class="json-toggle" onclick="toggleJsonViewer()">
+        <span>{ }</span> Show/Hide JSON Configs
+      </button>
+
+      <div id="json-viewer" class="json-viewer">
+        <div class="json-tabs">
+          <button class="json-tab active" data-json="schema">Schema</button>
+          <button class="json-tab" data-json="crud">CRUD Form</button>
+          <button class="json-tab" data-json="dashboard">Dashboard</button>
+          <button class="json-tab" data-json="api">API Integration</button>
+        </div>
+        <div id="json-schema" class="json-content active">
+          <pre id="schema-json"></pre>
+        </div>
+        <div id="json-crud" class="json-content">
+          <pre id="crud-json"></pre>
+        </div>
+        <div id="json-dashboard" class="json-content">
+          <pre id="dashboard-json"></pre>
+        </div>
+        <div id="json-api" class="json-content">
+          <pre id="api-json"></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Vibe Coding Framework v1.0 | Created by Rick Wells | <a href="https://urldefense.com/v3/__https://orchestrator-black.vercel.app/__;!!LgPfcEISpGU!5oFznLWbarGI6ojuILMLR2K9Mq-1xqBFuAYERyk9kqwWqrSm4zkv3SZLdnacAbMSe8UFd5vMt8GCHHVuDjLM$" target="_blank">Live Orchestrator →</a></p>
+    <p style="margin-top: 0.5rem; font-size: 0.8rem;">The config file is the product. The UI is just the delivery mechanism.</p>
+  </footer>
+
+  <script>
+    // Embedded JSON Configs
+    const configs = {
+      schema: {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Orchestrator Config",
+        "description": "Configuration file for a structured prompt generation pattern",
+        "type": "object",
+        "required": ["id", "name", "version", "layers", "phases"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier for this config" },
+          "name": { "type": "string", "description": "Human-readable name" },
+          "version": { "type": "string", "description": "Semantic version" },
+          "description": { "type": "string" },
+          "author": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "layers": {
+            "type": "object",
+            "description": "Which of the three core layers this config addresses",
+            "properties": {
+              "ux": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "weight": { "type": "string", "enum": ["primary", "secondary", "minimal"] } } },
+              "api": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "weight": { "type": "string", "enum": ["primary", "secondary", "minimal"] } } },
+              "schema": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "weight": { "type": "string", "enum": ["primary", "secondary", "minimal"] } } }
+            }
+          },
+          "phases": {
+            "type": "array",
+            "description": "Ordered list of phases",
+            "items": {
+              "type": "object",
+              "required": ["id", "name", "prompts"],
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "emoji": { "type": "string" },
+                "color": { "type": "string" },
+                "description": { "type": "string" },
+                "skippable": { "type": "boolean", "default": false },
+                "prompts": { "type": "array", "description": "Questions/inputs for this phase" },
+                "gates": { "type": "array", "description": "Quality gates that must pass" }
+              }
+            }
+          },
+          "output": { "type": "object", "description": "How to format the final structured prompt" },
+          "compliance": { "type": "object", "description": "Optional compliance requirements" }
+        }
+      },
+      crud: {
+        "id": "crud-form-v1",
+        "name": "CRUD Form Builder",
+        "version": "1.0.0",
+        "description": "For data entry forms with create, read, update, delete operations",
+        "author": "Rick Wells",
+        "tags": ["form", "crud", "data-entry", "healthcare"],
+        "layers": {
+          "ux": { "enabled": true, "weight": "primary" },
+          "api": { "enabled": true, "weight": "secondary" },
+          "schema": { "enabled": true, "weight": "secondary" }
+        },
+        "phases": [
+          { "id": "context", "name": "Context", "emoji": "🔵", "prompts": ["form_purpose", "screenshot", "tech_stack"], "gates": ["purpose_clear", "stack_confirmed"] },
+          { "id": "fields", "name": "Form Fields", "emoji": "🟣", "prompts": ["field_list", "required_fields", "validation_rules"], "gates": ["fields_defined", "validation_defined"] },
+          { "id": "workflow", "name": "Workflow", "emoji": "🟡", "prompts": ["submit_action", "approval_workflow", "notifications"], "gates": ["workflow_defined"] },
+          { "id": "data", "name": "Data Model", "emoji": "🟢", "prompts": ["related_data", "dropdown_sources"], "gates": ["data_relationships_clear"] },
+          { "id": "hardening", "name": "Quality & Testing", "emoji": "🔴", "prompts": ["test_scenarios", "error_handling", "accessibility"], "gates": ["test_coverage", "a11y_confirmed"] }
+        ],
+        "output": { "formats": ["markdown", "pdf", "clipboard"] },
+        "compliance": { "frameworks": ["HCA-Security"], "requiredGates": ["purpose_clear", "validation_defined", "test_coverage"] }
+      },
+      dashboard: {
+        "id": "dashboard-v1",
+        "name": "Analytics Dashboard",
+        "version": "1.0.0",
+        "description": "For metrics dashboards with charts, filters, and drill-downs",
+        "author": "Rick Wells",
+        "tags": ["dashboard", "analytics", "charts", "reporting"],
+        "layers": {
+          "ux": { "enabled": true, "weight": "primary" },
+          "api": { "enabled": true, "weight": "primary" },
+          "schema": { "enabled": true, "weight": "secondary" }
+        },
+        "phases": [
+          { "id": "context", "name": "Context", "emoji": "🔵", "prompts": ["dashboard_purpose", "primary_audience", "screenshot"], "gates": ["purpose_clear", "audience_identified"] },
+          { "id": "metrics", "name": "Metrics", "emoji": "🟣", "prompts": ["kpis", "metric_calculations", "refresh_frequency"], "gates": ["kpis_defined", "calculations_clear"] },
+          { "id": "visualizations", "name": "Visualizations", "emoji": "🟡", "prompts": ["chart_types", "layout", "interactions"], "gates": ["viz_defined"] },
+          { "id": "filters", "name": "Filters & Drill-downs", "emoji": "🟢", "prompts": ["filter_list", "default_view", "drilldown_paths"], "gates": ["filters_defined"] },
+          { "id": "data_sources", "name": "Data Sources", "emoji": "🔴", "prompts": ["sources", "data_volume", "access_control"], "gates": ["sources_identified", "access_defined"] }
+        ],
+        "output": { "formats": ["markdown", "pdf", "clipboard"] },
+        "compliance": { "frameworks": ["HCA-Security"], "requiredGates": ["purpose_clear", "access_defined"] }
+      },
+      api: {
+        "id": "api-integration-v1",
+        "name": "API Integration",
+        "version": "1.0.0",
+        "description": "For connecting to external or internal APIs with proper error handling",
+        "author": "Rick Wells",
+        "tags": ["api", "integration", "backend", "services"],
+        "layers": {
+          "ux": { "enabled": true, "weight": "minimal" },
+          "api": { "enabled": true, "weight": "primary" },
+          "schema": { "enabled": true, "weight": "primary" }
+        },
+        "phases": [
+          { "id": "context", "name": "Context", "emoji": "🔵", "prompts": ["integration_purpose", "direction", "trigger"], "gates": ["purpose_clear"] },
+          { "id": "endpoints", "name": "Endpoints", "emoji": "🟣", "prompts": ["external_endpoints", "internal_endpoints", "api_docs"], "gates": ["endpoints_defined"] },
+          { "id": "authentication", "name": "Authentication", "emoji": "🟡", "prompts": ["auth_method", "credential_storage", "token_refresh"], "gates": ["auth_defined", "secrets_secure"] },
+          { "id": "data_mapping", "name": "Data Mapping", "emoji": "🟢", "prompts": ["field_mapping", "transformations", "validation"], "gates": ["mapping_complete"] },
+          { "id": "error_handling", "name": "Error Handling", "emoji": "🔴", "prompts": ["retry_strategy", "timeout", "failure_notification", "circuit_breaker"], "gates": ["error_handling_defined", "monitoring_defined"] }
+        ],
+        "output": { "formats": ["markdown", "pdf", "clipboard"] },
+        "compliance": { "frameworks": ["HCA-Security", "SOC2"], "requiredGates": ["auth_defined", "secrets_secure", "error_handling_defined"] }
+      }
+    };
+
+    // Populate JSON viewers
+    document.getElementById('schema-json').textContent = JSON.stringify(configs.schema, null, 2);
+    document.getElementById('crud-json').textContent = JSON.stringify(configs.crud, null, 2);
+    document.getElementById('dashboard-json').textContent = JSON.stringify(configs.dashboard, null, 2);
+    document.getElementById('api-json').textContent = JSON.stringify(configs.api, null, 2);
+
+    // Navigation
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(btn.dataset.section).classList.add('active');
+        
+        // Reset config view when switching sections
+        if (btn.dataset.section === 'configs') {
+          showConfigList();
+        }
+      });
+    });
+
+    // Config card clicks
+    document.querySelectorAll('.config-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const configId = card.dataset.config;
+        showConfigDetail(configId);
+        
+        // Also switch to configs section if on overview
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-section="configs"]').classList.add('active');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById('configs').classList.add('active');
+      });
+    });
+
+    function showConfigList() {
+      document.getElementById('config-list').style.display = 'block';
+      document.querySelectorAll('.config-detail').forEach(d => d.classList.remove('active'));
+    }
+
+    function showConfigDetail(configId) {
+      document.getElementById('config-list').style.display = 'none';
+      document.querySelectorAll('.config-detail').forEach(d => d.classList.remove('active'));
+      document.getElementById('config-' + configId).classList.add('active');
+    }
+
+    // Phase toggle
+    function togglePhase(header) {
+      const item = header.parentElement;
+      item.classList.toggle('expanded');
+    }
+
+    // JSON viewer toggle
+    function toggleJsonViewer() {
+      document.getElementById('json-viewer').classList.toggle('active');
+    }
+
+    // JSON tabs
+    document.querySelectorAll('.json-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.json-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        document.querySelectorAll('.json-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('json-' + tab.dataset.json).classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
